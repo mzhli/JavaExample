@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE Menu [
+    <!ELEMENT Menu (Salads,Soups)>
+    <!ELEMENT Salads (Salad+)>
+    <!ELEMENT Salad (name,price)>
+    <!ATTLIST Salad id CDATA #REQUIRED>
+    <!ELEMENT Soups (Soup+)>
+    <!ELEMENT Soup (name,price)>
+    <!ATTLIST Soup id CDATA #REQUIRED>
+    <!ELEMENT name (#PCDATA)>
+    <!ELEMENT price (#PCDATA)>
+]>
+
+<Menu>
+    <Salads>
+        <Salad id="SAL-1">
+            <name>Patato Salad</name>
+            <price>10</price>
+        </Salad>
+        <Salad id="SAL-2">
+            <name>Vegetable Salad with Salmon</name>
+            <price>15</price>
+        </Salad>
+        <Salad id="SAL-3">
+            <name>Fruit Salad</name>
+            <price>20</price>
+        </Salad>
+    </Salads>
+    <Soups>
+        <Soup id="SOUP-1">
+            <name>Creamed Mushroom Soup</name>
+            <price>25</price>
+        </Soup>
+        <Soup id="SOUP-2">
+            <name>Spicy Seafood Soup</name>
+            <price>28</price>
+        </Soup>
+    </Soups>
+</Menu>
