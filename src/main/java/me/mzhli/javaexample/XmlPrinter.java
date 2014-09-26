@@ -9,10 +9,11 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-/**
- * @author mzhli
- *
- */
+
+/** 
+* @ClassName: XmlPrinter
+* @Description: A utility class to print W3C dom object to pretty format
+*/ 
 public class XmlPrinter {
 	public static final short OUTPUT_MODE_TREE 	= 1;
 	public static final short OUTPUT_MODE_XML 	= 2;
@@ -25,21 +26,35 @@ public class XmlPrinter {
 	
 	private short outputMode = OUTPUT_MODE_TREE;
 	
-	public XmlPrinter() {
-	}
 	
+	/** 
+	* @Title: setOutputMode
+	* @Description: Set the output mode
+	* @param mode Mode of output
+	*/ 
 	public void setOutputMode(short mode) {
 		outputMode = mode;
 	}
 	
+	/** 
+	* @Title: print
+	* @Description: Print the xml document to stdout
+	* @param doc xml document object to print
+	*/ 
 	public void print(Document doc) {
 		this.print(System.out, doc);
 	}
 	
+	/** 
+	* @Title: print
+	* @Description: Print the XML document object to output stream
+	* @param ps	Output stream
+	* @param doc XML document object to print
+	*/ 
 	public void print(PrintStream ps, Document doc) {
 		switch (outputMode) {
 		case OUTPUT_MODE_TREE:
-			printInTree(ps, doc);
+			printAsTree(ps, doc);
 			break;
 		case OUTPUT_MODE_XML:
 			//TBD
@@ -49,7 +64,13 @@ public class XmlPrinter {
 		}
 	}
 	
-	protected static void printInTree(PrintStream ps, Document doc) {
+	/** 
+	* @Title: printAsTree
+	* @Description: Print the XML document as a simple tree structure
+	* @param ps Output stream
+	* @param doc XML document object to print
+	*/ 
+	protected static void printAsTree(PrintStream ps, Document doc) {
 		Element root = doc.getDocumentElement();
 		ps.print(root.getTagName());
 		if (root.hasAttributes()) {
@@ -69,6 +90,14 @@ public class XmlPrinter {
 		}
 	}
 	
+	/** 
+	* @Title: printSubTree
+	* @Description: Print element nodes as sub tree
+	* @param ps Output stream
+	* @param subtree Element node to print
+	* @param indent The indent string preceding every branch of sub tree
+	* @param isLastBranch Tell if the element is the last child or branch of parent
+	*/ 
 	private static void printSubTree(PrintStream ps, Element subtree, String indent, boolean isLastBranch) {
 		String subindent = null;
 		if (!isLastBranch) {
@@ -103,6 +132,12 @@ public class XmlPrinter {
 		}
 	}
 	
+	/** 
+	* @Title: printAttributes
+	* @Description: Print element's attributes to output stream
+	* @param ps Output stream
+	* @param elem Target element to print
+	*/ 
 	private static void printAttributes(PrintStream ps, Element elem) {
 		ps.print("[");
 		NamedNodeMap attrs = elem.getAttributes();
