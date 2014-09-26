@@ -2,13 +2,16 @@
 <!DOCTYPE Menu [
     <!ELEMENT Menu (Salads,Soups)>
     <!ELEMENT Salads (Salad+)>
-    <!ELEMENT Salad (name,price)>
-    <!ATTLIST Salad id CDATA #REQUIRED>
+    <!ELEMENT Salad (name,price,topten*,ingredients?)>
+    <!ATTLIST Salad id ID #REQUIRED>
     <!ELEMENT Soups (Soup+)>
     <!ELEMENT Soup (name,price)>
-    <!ATTLIST Soup id CDATA #REQUIRED>
+    <!ATTLIST Soup id ID #REQUIRED>
     <!ELEMENT name (#PCDATA)>
     <!ELEMENT price (#PCDATA)>
+    <!ELEMENT topten (#PCDATA)>
+    <!ELEMENT ingredients (ingredient+)>
+    <!ELEMENT ingredient (#PCDATA)>
 ]>
 
 <Menu>
@@ -18,12 +21,19 @@
             <price>10</price>
         </Salad>
         <Salad id="SAL-2">
-            <name>Vegetable Salad with Salmon</name>
-            <price>15</price>
-        </Salad>
-        <Salad id="SAL-3">
             <name>Fruit Salad</name>
             <price>20</price>
+            <topten>Yes</topten>
+            <ingredients>
+                <ingredient>Mango</ingredient>    
+                <ingredient>Banana</ingredient>
+                <ingredient>Apple</ingredient>
+                <ingredient>Grape</ingredient>
+            </ingredients>
+        </Salad>
+        <Salad id="SAL-3">
+            <name>Vegetable Salad with Salmon</name>
+            <price>15</price>
         </Salad>
     </Salads>
     <Soups>

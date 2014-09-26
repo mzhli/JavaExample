@@ -12,7 +12,7 @@ import org.xml.sax.SAXException;
 
 
 public class XmlReader {
-	DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
+	private DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
 	
 	public XmlReader() {
 		builderFactory.setValidating(true);

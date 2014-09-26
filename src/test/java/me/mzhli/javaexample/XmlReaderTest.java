@@ -7,7 +7,6 @@ import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
 
 import static org.w3c.dom.Node.*;
 
@@ -36,15 +35,16 @@ public class XmlReaderTest extends TestCase {
 		
 		NodeList children = menu.getChildNodes();
 		Element salads = (Element)children.item(0);
+		out.println("|--" + salads.getTagName());
 		NodeList saladlist = salads.getElementsByTagName("Salad");
 		for (int iSalad = 0; iSalad < saladlist.getLength(); iSalad++) {
-			Element child = (Element)saladlist.item(iSalad);
-			out.print("-" + child.getTagName() + "[");
-			String val = child.getAttribute("id");
-			NamedNodeMap attrs = child.getAttributes();
+			Element salad = (Element)saladlist.item(iSalad);
+			out.print("   |--" + salad.getTagName() + "[");
+			String val = salad.getAttribute("id");
+			NamedNodeMap attrs = salad.getAttributes();
 			for (int iAttr = 0; iAttr < attrs.getLength(); iAttr++) {
 				Attr attr = (Attr)attrs.item(iAttr);
-				if (iAttr == 0) {
+				if (iAttr > 0) {
 					out.print(",");
 				}
 				out.print(attr.getName() + "=" + attr.getValue());
@@ -52,7 +52,7 @@ public class XmlReaderTest extends TestCase {
 			out.println("]");
 		}
 
-		Element soups = (Element)children.item(1);
+		//Element soups = (Element)children.item(1);
 		
 //		Node salads = menu.getFirstChild();
 //		assertNotNull(salads);
