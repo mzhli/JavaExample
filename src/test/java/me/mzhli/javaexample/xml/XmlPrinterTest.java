@@ -1,4 +1,7 @@
-package me.mzhli.javaexample;
+package me.mzhli.javaexample.xml;
+
+import me.mzhli.javaexample.xml.XmlPrinter;
+import me.mzhli.javaexample.xml.XmlReader;
 
 import org.w3c.dom.Document;
 

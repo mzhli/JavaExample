@@ -1,4 +1,4 @@
-package me.mzhli.javaexample;
+package me.mzhli.javaexample.xml;
 
 import java.io.PrintStream;
 
