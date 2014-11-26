@@ -3,7 +3,8 @@ package me.mzhli.javaexample.lang;
 import java.lang.reflect.Array;
 import java.util.Arrays;
 
-public class TemplateClass<T extends Comparable<T>> {
+// Here use wildcard template parameter， otherwise the class like MyName cannot match it
+public class TemplateClass<T extends Comparable<? super T>> {
 
 	private T val;
 	private T[] arr;  // This will be "Comparable[] arr;" after erasure
@@ -37,23 +38,69 @@ public class TemplateClass<T extends Comparable<T>> {
 	}
 
 	public static void main(String[] args) throws Exception {
-		TemplateClass<String> t = new TemplateClass<String>(String.class);
+		TemplateClass<MyName> t = new TemplateClass<MyName>(MyName.class);
 		System.out.printf("Old Value is '%s'\n", t.getVal());
-		t.setVal("abc");
+		t.setVal(new MyName("abc"));
 		System.out.printf("#1 New Value is '%s'\n", t.getVal());
-		t.setVal("AAA");
+		t.setVal(new MyName("AAA"));
 		System.out.printf("#2 New Value is '%s'\n", t.getVal());
-		t.setVal("bcd");
+		t.setVal(new MyName("bcd"));
 		System.out.printf("#3 New Value is '%s'\n", t.getVal());
 		
 		System.out.printf("Old Array is '%s'\n", Arrays.toString(t.getArray()));
 		System.out.printf("Component Type is '%s'\n", t.getArray().getClass().getComponentType().getCanonicalName());
-		t.setArray(new String[]{"a", "b", "c", "d", "e"});
+		t.setArray(new MyName[]{new MyName("a"), new MyName("b"), new MyName("c"), new MyName("d"), new MyName("e")});
 		System.out.printf("#1 New Array Value is '%s'\n", Arrays.toString(t.getArray()));
-		t.setArray(new String[]{"A", "B", "C", "D", "E"});
+		t.setArray(new MyName[]{new MyName("A"), new MyName("B"), new MyName("C"), new MyName("D"), new MyName("E")});
 		System.out.printf("#2 New Array Value is '%s'\n", Arrays.toString(t.getArray()));
-		t.setArray(new String[]{"X", "Y", "Z"});
+		t.setArray(new MyName[]{new MyName("X"), new MyName("Y"), new MyName("Z")});
 		System.out.printf("#3 New Array Value is '%s'\n", Arrays.toString(t.getArray()));		
 	}
 
+}
+
+// The class MyString implements the interface Comparable<MyString>
+class MyString implements Comparable<MyString> {
+
+	private String strVal;
+	
+	public MyString(String strVal) {
+		super();
+		this.strVal = strVal;
+	}
+
+	@Override
+	public int compareTo(MyString o) {
+		return strVal.compareTo(o.strVal);
+	}
+
+	/*
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return strVal.toString();
+	}
+	
+}
+
+// The class MyName inherits MyString, which implies it 
+// implement Comparable<MyString> other than Comparable<MyName>
+class MyName extends MyString {
+	
+	public MyName() {
+		super("");
+	}
+
+	public MyName(String name) {
+		super(name);
+	}
+
+	/*
+	 * @see me.mzhli.javaexample.lang.MyString#toString()
+	 */
+	@Override
+	public String toString() {
+		return super.toString();
+	}
 }
