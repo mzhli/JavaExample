@@ -30,7 +30,6 @@ public class DerivedStaticMethod {
 	static class C extends A {
 	}
 
-	@SuppressWarnings("static-access")
 	public static void main(String[] args) {
 		// Case 1: There is no polymorphism for static method
 		A case1 = new B();
@@ -41,6 +40,7 @@ public class DerivedStaticMethod {
 		// Case 3: Static method of base class will be hidden if it is redefined in derived class
 		B case3 = new B();
 		case3.callStaticMethod();
+		
 	}
 
 }
