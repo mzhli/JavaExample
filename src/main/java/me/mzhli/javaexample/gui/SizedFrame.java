@@ -6,9 +6,7 @@ import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.GraphicsConfiguration;
 import java.awt.HeadlessException;
-import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.font.FontRenderContext;
 import java.awt.font.LineMetrics;
@@ -17,18 +15,16 @@ import java.awt.geom.Rectangle2D;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 
+@SuppressWarnings("serial")
 public class SizedFrame extends JFrame {
 
-	private static final long serialVersionUID = 1L;
-	
-	public static final int DEFAULT_WIDTH = 600;
-	public static final int DEFAULT_HEIGHT = 300;
-
 	public SizedFrame(String title) throws HeadlessException {
+		this(title, DEFAULT_WIDTH, DEFAULT_HEIGHT);
+	}
+	
+	public SizedFrame(String title, int width, int height) throws HeadlessException {
 		super(title);
-		this.setSize(new Dimension(DEFAULT_WIDTH, DEFAULT_HEIGHT));
-		// Create a text label in the center of frame
-		this.add(new CenteredTextLabel());
+		this.setSize(width, height);
 	}
 
 	public void moveToScreenCenter() {
@@ -87,6 +83,8 @@ public class SizedFrame extends JFrame {
 			public void run() {
 				SizedFrame frame = new SizedFrame("Hello World");
 				frame.setDefaultCloseOperation(EXIT_ON_CLOSE);
+				// Create a text label in the center of frame
+				frame.add(new CenteredTextLabel());
 				// Move window to screen center
 				frame.moveToScreenCenter();
 				frame.setVisible(true);
@@ -94,4 +92,6 @@ public class SizedFrame extends JFrame {
 		});
 	}
 
+	private static final int DEFAULT_WIDTH = 600;
+	private static final int DEFAULT_HEIGHT = 300;
 }
