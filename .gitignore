@@ -13,5 +13,5 @@ hs_err_pid*
 /target/
 
 # Some special useless files
-.DS_store
+.DS_Store
 .settings
