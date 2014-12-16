@@ -15,7 +15,7 @@ public class AdminLookup {
 	 * @throws SQLException if any database operation fails
 	 */
 	public AdminLookup(String dbURL, String username, String password) throws SQLException {
-		String connURL = "jdbc:MySQL:" + dbURL;
+		String connURL = "jdbc:mysql:" + dbURL;
 		conn = DriverManager.getConnection(connURL, username, password);
 	}
 	
@@ -196,7 +196,7 @@ public class AdminLookup {
 	
 	
 	public static void main(String[] args) {
-		final String TEST_DB_URL = "";
+		final String TEST_DB_URL = "//localhost:3306/test";
 		final String DB_USER_NAME = "mzhli";
 		final String DB_PASSWORD = "";
 		try {
@@ -208,22 +208,22 @@ public class AdminLookup {
 				System.out.printf("==========================================\n");
 				System.out.printf("Case 1 result:\n");
 				System.out.printf("Total count: %d\n", result.size());
-				for (AdminInfo admin : result) {
-					System.out.printf("-- '%s' > '%s' > '%s'\n", admin.getCountry(), 
-															     admin.getState(), 
-															     admin.getCity());
-				}
+//				for (AdminInfo admin : result) {
+//					System.out.printf("-- '%s' > '%s' > '%s'\n", admin.getCountry(), 
+//															     admin.getState(), 
+//															     admin.getCity());
+//				}
 				
 				// Case 2: All records of state 'CA'
 				System.out.printf("==========================================\n");
-				result = lookup.getAdminByState("Usa", "ca");
+				result = lookup.getAdminByState("Usa", "nv");
 				System.out.printf("Case 2 result:\n");
 				System.out.printf("Total count: %d\n", result.size());
-				for (AdminInfo admin : result) {
-					System.out.printf("-- '%s' > '%s' > '%s'\n", admin.getCountry(), 
-															     admin.getState(), 
-															     admin.getCity());
-				}
+//				for (AdminInfo admin : result) {
+//					System.out.printf("-- '%s' > '%s' > '%s'\n", admin.getCountry(), 
+//															     admin.getState(), 
+//															     admin.getCity());
+//				}
 				
 				// Case 3: All records of city 'Sunnyvale'
 				System.out.printf("==========================================\n");
