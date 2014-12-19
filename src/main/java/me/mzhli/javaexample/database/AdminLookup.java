@@ -60,9 +60,9 @@ public class AdminLookup {
 			Statement stmt = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
 			try {
 				// Get result set
-				ResultSet rs = stmt.executeQuery(sqlSelect(country.toUpperCase(), 
-														   state.toUpperCase(),
-														   city.toUpperCase()));
+				String strSQL = sqlSelect(country, state, city);
+				System.out.printf("[DEBUG] SQL='%s'\n", strSQL);
+				ResultSet rs = stmt.executeQuery(strSQL);
 				try {
 					// Iterate all records
 					while (rs.next()) {
@@ -94,31 +94,16 @@ public class AdminLookup {
 		sb.append(FIELD_NAME_CITY);
 		sb.append(" FROM ");
 		sb.append(ADMIN_TABLE_NAME);
-		// Generate conditions
+		// Organize conditions
 		ArrayList<String> conditions = new ArrayList<String>();
 		if (country.length() > 0) {
-			StringBuilder sbCondition = new StringBuilder();
-			sbCondition.append(FIELD_NAME_COUNTRY);
-			sbCondition.append("=\"");
-			sbCondition.append(country);
-			sbCondition.append("\"");
-			conditions.add(sbCondition.toString());
+			conditions.add(composeCondition(FIELD_NAME_COUNTRY, country));
 		}
 		if (state.length() > 0) {
-			StringBuilder sbCondition = new StringBuilder();
-			sbCondition.append(FIELD_NAME_STATE);
-			sbCondition.append("=\"");
-			sbCondition.append(state);
-			sbCondition.append("\"");
-			conditions.add(sbCondition.toString());
+			conditions.add(composeCondition(FIELD_NAME_STATE, state));
 		}
 		if (city.length() > 0) {
-			StringBuilder sbCondition = new StringBuilder();
-			sbCondition.append(FIELD_NAME_CITY);
-			sbCondition.append("=\"");
-			sbCondition.append(city);
-			sbCondition.append("\"");
-			conditions.add(sbCondition.toString());
+			conditions.add(composeCondition(FIELD_NAME_CITY, city));
 		}
 		
 		if (! conditions.isEmpty()) {
@@ -130,8 +115,26 @@ public class AdminLookup {
 			}
 		}
 		
+		sb.append(" ORDER BY ");
+		sb.append(FIELD_NAME_COUNTRY);
+		sb.append(",");
+		sb.append(FIELD_NAME_STATE);
+		sb.append(",");
+		sb.append(FIELD_NAME_CITY);
+		sb.append(" ASC");
 		// FINISH
 		sb.append(";");
+		return sb.toString();
+	}
+	
+	private static String composeCondition(String fieldName, String valuePattern) {
+		// Normalized value pattern
+		String newValPattern = valuePattern.replace('*', '%').replace('?', '_').toUpperCase();
+		StringBuilder sb = new StringBuilder();
+		sb.append(fieldName);
+		sb.append(" LIKE \"");
+		sb.append(newValPattern);
+		sb.append("\"");
 		return sb.toString();
 	}
 	
@@ -227,7 +230,7 @@ public class AdminLookup {
 				
 				// Case 3: All records of city 'Sunnyvale'
 				System.out.printf("==========================================\n");
-				result = lookup.getAdminByCity("Usa", "ca", "sunnyvale");
+				result = lookup.getAdminByCity("Usa", "ca", "sunny");
 				System.out.printf("Case 3 result:\n");
 				System.out.printf("Total count: %d\n", result.size());
 				for (AdminInfo admin : result) {
