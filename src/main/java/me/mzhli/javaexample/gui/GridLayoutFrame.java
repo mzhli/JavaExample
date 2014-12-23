@@ -4,10 +4,12 @@ import java.awt.BorderLayout;
 import java.awt.EventQueue;
 import java.awt.GridBagLayout;
 import java.awt.HeadlessException;
+import java.awt.ScrollPane;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
+import java.util.List;
 
 import javax.imageio.ImageIO;
 import javax.swing.AbstractAction;
@@ -24,41 +26,63 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
+import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.EtchedBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 @SuppressWarnings("serial")
 public final class GridLayoutFrame extends SizedFrame {
 	
-	private JButton btnOK;
-	private JButton btnCancel;
+	private JButton btnSearch;
+	private JButton btnSetting;
 	private JTextField txtInput;
 	private JComboBox<String> cbCategory;
-	private JList<String> listResult;
+	private JScrollPane scrollList;
 	private JToolBar toolBar;
 	
+	/**
+	 * Actions shared by Menu, ToolBar and PopupMenu
+	 */
 	private Action copyAction;
 	private Action pasteAction;
 	private Action delAction;
+	private Action toggleMenuAction;
+	
+	/**
+	 * Internal states or values for components
+	 */
+	private String selectedResults = "";
+	private boolean isMenuVisible = true;
 
 	{
 		// Initialize all components
-		final JFrame thisFrame = this;
-		btnOK = new JButton("Ok");
-		btnOK.addActionListener(new ActionListener() {
+		//final JFrame thisFrame = this;
+		Icon icoSearch = null;
+		Icon icoSetting = null;
+		try {
+			icoSearch = new ImageIcon(ImageIO.read(getClass().getResource("/images/icons/search@24x24.png")));
+			icoSetting = new ImageIcon(ImageIO.read(getClass().getResource("/images/icons/setting@24x24.png")));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		btnSearch = new JButton("Search", icoSearch);
+;		btnSearch.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				
 			}
 		});
 		
-		btnCancel = new JButton("Cancel");
-		btnCancel.addActionListener(new ActionListener() {
+		btnSetting = new JButton("Setting", icoSetting);
+		btnSetting.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				thisFrame.dispatchEvent(new WindowEvent(thisFrame, WindowEvent.WINDOW_CLOSING));
+				//thisFrame.dispatchEvent(new WindowEvent(thisFrame, WindowEvent.WINDOW_CLOSING));
 			}
 		});
 		
@@ -68,14 +92,63 @@ public final class GridLayoutFrame extends SizedFrame {
 				"Category 1", "Category 2", "Category 3"
 		});
 		
-		listResult = new JList<String>(new String[]{
+		JList<String> listResult = new JList<String>(new String[]{
 				"Result 1",
 				"Result 2",
-				"Result 3"
+				"Result 3",
+				"Result 4",
+				"Result 5",
+				"Result 6",
+				"Result 7",
+				"Result 8",
+				"Result 9"
 		});
 		listResult.setBorder(BorderFactory.createLoweredBevelBorder());
+		scrollList = new JScrollPane(listResult);
+		listResult.addListSelectionListener(new ListSelectionListener() {
+			@SuppressWarnings("unchecked")
+			@Override
+			public void valueChanged(ListSelectionEvent event) {
+				if (! event.getValueIsAdjusting()) {
+					JList<String> list = (JList<String>)event.getSource();
+					List<String> selections = list.getSelectedValuesList();
+					StringBuilder sb = new StringBuilder();
+					for (String selected : selections) {
+						sb.append(selected);
+						sb.append(" ");
+					}
+					updateInput(sb.toString());
+				}
+			}
+		});
+
 		
-		// copy,paste,del action
+		// initialize actions
+		initActions();
+		
+		// create menu bar
+		createMenu();
+		
+		// create tool bar
+		createToolbar();
+		
+		// popup menu
+		JPopupMenu popupMenu = new JPopupMenu();
+		popupMenu.add(new JMenuItem(copyAction));
+		popupMenu.add(new JMenuItem(pasteAction));
+		popupMenu.add(new JMenuItem(delAction));
+		listResult.setComponentPopupMenu(popupMenu);
+	}
+
+	public GridLayoutFrame(String title)
+			throws HeadlessException {
+		super(title, FRAME_WIDTH, FRAME_HEIGHT);
+	}
+	
+	/**
+	 * Initialize all actions
+	 */
+	private void initActions() {
 		copyAction = new AbstractAction("Copy") {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -91,31 +164,42 @@ public final class GridLayoutFrame extends SizedFrame {
 			public void actionPerformed(ActionEvent e) {
 			}
 		};
+		toggleMenuAction = new AbstractAction("Show Menu") {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				JToggleButton btn = (JToggleButton)e.getSource();
+				updateMenu(btn.isSelected());
+			}
+		};
 		
 		Icon icoCopy16 = null;
-		Icon icoCopy32 = null;
+		Icon icoCopy24 = null;
 		Icon icoPaste16 = null;
-		Icon icoPaste32 = null;
+		Icon icoPaste24 = null;
 		Icon icoDelete16 = null;
-		Icon icoDelete32 = null;
+		Icon icoDelete24 = null;
+		Icon icoToggleMenu24 = null;
 		try {
 			icoCopy16 = new ImageIcon(ImageIO.read(this.getClass().getResource("/images/icons/copy@16x16.png")));
-			icoCopy32 = new ImageIcon(ImageIO.read(this.getClass().getResource("/images/icons/copy@32x32.png")));
+			icoCopy24 = new ImageIcon(ImageIO.read(this.getClass().getResource("/images/icons/copy@24x24.png")));
 			icoPaste16 = new ImageIcon(ImageIO.read(this.getClass().getResource("/images/icons/paste@16x16.png")));
-			icoPaste32 = new ImageIcon(ImageIO.read(this.getClass().getResource("/images/icons/paste@32x32.png")));
+			icoPaste24 = new ImageIcon(ImageIO.read(this.getClass().getResource("/images/icons/paste@24x24.png")));
 			icoDelete16 = new ImageIcon(ImageIO.read(this.getClass().getResource("/images/icons/delete@16x16.png")));
-			icoDelete32 = new ImageIcon(ImageIO.read(this.getClass().getResource("/images/icons/delete@32x32.png")));
+			icoDelete24 = new ImageIcon(ImageIO.read(this.getClass().getResource("/images/icons/delete@24x24.png")));
+			icoToggleMenu24 = new ImageIcon(ImageIO.read(this.getClass().getResource("/images/icons/togglemenu@24x24.png")));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		copyAction.putValue(Action.SMALL_ICON, icoCopy16);
-//		copyAction.putValue(Action.LARGE_ICON_KEY, icoCopy32);
+		copyAction.putValue(Action.LARGE_ICON_KEY, icoCopy24);
 		pasteAction.putValue(Action.SMALL_ICON, icoPaste16);
-//		pasteAction.putValue(Action.LARGE_ICON_KEY, icoPaste32);
+		pasteAction.putValue(Action.LARGE_ICON_KEY, icoPaste24);
 		delAction.putValue(Action.SMALL_ICON, icoDelete16);
-//		delAction.putValue(Action.LARGE_ICON_KEY, icoDelete32);
-		
-		// menu bar
+		delAction.putValue(Action.LARGE_ICON_KEY, icoDelete24);
+		toggleMenuAction.putValue(Action.LARGE_ICON_KEY, icoToggleMenu24);
+	}
+	
+	public void createMenu() {
 		JMenuBar menuBar = new JMenuBar();
 		JMenu editMenu = new JMenu("Edit");
 		editMenu.add(new JMenuItem(copyAction));
@@ -123,25 +207,17 @@ public final class GridLayoutFrame extends SizedFrame {
 		editMenu.add(new JMenuItem(delAction));
 		menuBar.add(editMenu);
 		setJMenuBar(menuBar);
-		
-		// tool bar
+	}
+	
+	public void createToolbar() {
 		toolBar = new JToolBar("Edit");
 		toolBar.add(copyAction);
 		toolBar.add(pasteAction);
 		toolBar.add(delAction);
-		
-		// popup menu
-		JPopupMenu popupMenu = new JPopupMenu();
-		popupMenu.add(new JMenuItem(copyAction));
-		popupMenu.add(new JMenuItem(pasteAction));
-		popupMenu.add(new JMenuItem(delAction));
-		listResult.setComponentPopupMenu(popupMenu);
-	}
-
-	public GridLayoutFrame(String title)
-			throws HeadlessException {
-		super(title, FRAME_WIDTH, FRAME_HEIGHT);
-		
+		toolBar.addSeparator();
+		JToggleButton btnToggle = new JToggleButton(toggleMenuAction); 
+		btnToggle.setSelected(true);
+		toolBar.add(btnToggle);
 	}
 	
 	public void applyLayout() {
@@ -149,12 +225,46 @@ public final class GridLayoutFrame extends SizedFrame {
 		GridBagLayout layout = new GridBagLayout();
 		JPanel panel = new JPanel();
 		panel.setLayout(layout);
-		panel.add(btnOK, new GBC(2, 0, 1, 1).setWeight(0, 0).setFill(GBC.BOTH).setInsets(1));
-		panel.add(btnCancel, new GBC(2, 1, 1, 1).setWeight(0, 0).setFill(GBC.BOTH).setInsets(1));
-		panel.add(txtInput, new GBC(0, 0, 2, 1).setWeight(100, 0).setFill(GBC.BOTH).setInsets(1));
-		panel.add(cbCategory, new GBC(0, 1, 2, 1).setWeight(100, 0).setFill(GBC.BOTH).setInsets(1));
-		panel.add(listResult, new GBC(0, 2, 3, 3).setWeight(100, 100).setFill(GBC.BOTH).setInsets(2));
+		panel.add(btnSearch, new GBC(1, 1, 1, 1).setWeight(0, 0).setFill(GBC.BOTH).setInsets(1));
+		panel.add(btnSetting, new GBC(2, 1, 1, 1).setWeight(0, 0).setFill(GBC.BOTH).setInsets(1));
+		panel.add(txtInput, new GBC(0, 0, 3, 1).setWeight(100, 0).setFill(GBC.BOTH).setInsets(1));
+		panel.add(cbCategory, new GBC(0, 1, 1, 1).setWeight(100, 0).setFill(GBC.BOTH).setInsets(1));
+		panel.add(scrollList, new GBC(0, 4, 4, 4).setWeight(100, 100).setFill(GBC.BOTH).setInsets(2));
 		add(panel, BorderLayout.CENTER);
+	}
+	
+	/**
+	 * Enforce all components reload the latest values
+	 */
+	public void refreshAll() {
+		refreshInput();
+		refreshMenu();
+	}
+	
+	/**
+	 * Update input text box display
+	 * @param newInput the new input text
+	 */
+	public void updateInput(String newInput) {
+		selectedResults = newInput;
+		refreshInput();
+	}
+	
+	private void refreshInput() {
+		txtInput.setText(selectedResults);
+	}
+	
+	/**
+	 * Update menu display
+	 * @param isVisible the visibility of menu
+	 */
+	public void updateMenu(boolean isVisible) {
+		isMenuVisible = isVisible;
+		refreshMenu();
+	}
+	
+	private void refreshMenu() {
+		getJMenuBar().setVisible(isMenuVisible);
 	}
 
 	private static final int FRAME_HEIGHT = 300;
