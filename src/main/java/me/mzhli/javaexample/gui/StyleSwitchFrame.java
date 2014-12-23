@@ -28,7 +28,6 @@ public class StyleSwitchFrame extends SizedFrame {
 	private void addButtons() {
 		panel = new JPanel();
 		try {
-			this.getClass().getResource("/images/icons/blue.png");
 			panel.add(new JButton(new ColorAction("Blue", Color.BLUE, 
 					new ImageIcon(ImageIO.read(this.getClass().getResource("/images/icons/blue.png"))))));
 			panel.add(new JButton(new ColorAction("Red", Color.RED, 

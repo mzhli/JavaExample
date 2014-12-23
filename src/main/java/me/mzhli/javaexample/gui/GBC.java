@@ -3,6 +3,9 @@ package me.mzhli.javaexample.gui;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 
+/**
+ * A utility class for helping construct GridBagConstraints 
+ */
 public class GBC extends GridBagConstraints {
 
 	public GBC(int gridx, int gridy) {
