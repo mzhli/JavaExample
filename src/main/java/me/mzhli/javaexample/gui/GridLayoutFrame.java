@@ -199,7 +199,7 @@ public final class GridLayoutFrame extends SizedFrame {
 		toggleMenuAction.putValue(Action.LARGE_ICON_KEY, icoToggleMenu24);
 	}
 	
-	public void createMenu() {
+	protected void createMenu() {
 		JMenuBar menuBar = new JMenuBar();
 		JMenu editMenu = new JMenu("Edit");
 		editMenu.add(new JMenuItem(copyAction));
@@ -209,7 +209,7 @@ public final class GridLayoutFrame extends SizedFrame {
 		setJMenuBar(menuBar);
 	}
 	
-	public void createToolbar() {
+	protected void createToolbar() {
 		toolBar = new JToolBar("Edit");
 		toolBar.add(copyAction);
 		toolBar.add(pasteAction);
@@ -245,7 +245,7 @@ public final class GridLayoutFrame extends SizedFrame {
 	 * Update input text box display
 	 * @param newInput the new input text
 	 */
-	public void updateInput(String newInput) {
+	protected void updateInput(String newInput) {
 		selectedResults = newInput;
 		refreshInput();
 	}
@@ -258,7 +258,7 @@ public final class GridLayoutFrame extends SizedFrame {
 	 * Update menu display
 	 * @param isVisible the visibility of menu
 	 */
-	public void updateMenu(boolean isVisible) {
+	protected void updateMenu(boolean isVisible) {
 		isMenuVisible = isVisible;
 		refreshMenu();
 	}
