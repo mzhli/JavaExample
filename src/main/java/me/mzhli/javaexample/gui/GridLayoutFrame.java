@@ -4,10 +4,8 @@ import java.awt.BorderLayout;
 import java.awt.EventQueue;
 import java.awt.GridBagLayout;
 import java.awt.HeadlessException;
-import java.awt.ScrollPane;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.util.List;
 
@@ -19,30 +17,51 @@ import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JFrame;
 import javax.swing.JList;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
-import javax.swing.border.BevelBorder;
-import javax.swing.border.EtchedBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 @SuppressWarnings("serial")
 public final class GridLayoutFrame extends SizedFrame {
 	
+	/**
+	 * Application logo
+	 */
+	private static final ImageIcon ICON_LOGO;
+	
+	static 
+	{
+		ImageIcon icoLogo = null;
+		try {
+			icoLogo = new ImageIcon(ImageIO.read(GridLayoutFrame.class.getResource("/images/icons/logo.gif")));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		ICON_LOGO = icoLogo;
+	}
+	
+	private static final int FRAME_HEIGHT = 500;
+	private static final int FRAME_WIDTH = 400;
+	
+	/**
+	 * Components 
+	 */
 	private JButton btnSearch;
 	private JButton btnSetting;
 	private JTextField txtInput;
 	private JComboBox<String> cbCategory;
 	private JScrollPane scrollList;
+	private JList<String> listResult;
 	private JToolBar toolBar;
 	
 	/**
@@ -61,7 +80,19 @@ public final class GridLayoutFrame extends SizedFrame {
 
 	{
 		// Initialize all components
-		//final JFrame thisFrame = this;
+		initComponents();
+		
+		// initialize actions
+		initActions();
+		
+		// create menu bar
+		createMenu();
+		
+		// create tool bar
+		createToolbar();
+	}
+
+	private void initComponents() {
 		Icon icoSearch = null;
 		Icon icoSetting = null;
 		try {
@@ -82,7 +113,8 @@ public final class GridLayoutFrame extends SizedFrame {
 		btnSetting.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				//thisFrame.dispatchEvent(new WindowEvent(thisFrame, WindowEvent.WINDOW_CLOSING));
+				JOptionPane.showMessageDialog(GridLayoutFrame.this, "Setting updated", "Setting", 
+						JOptionPane.WARNING_MESSAGE, ICON_LOGO);
 			}
 		});
 		
@@ -92,7 +124,7 @@ public final class GridLayoutFrame extends SizedFrame {
 				"Category 1", "Category 2", "Category 3"
 		});
 		
-		JList<String> listResult = new JList<String>(new String[]{
+		listResult = new JList<String>(new String[]{
 				"Result 1",
 				"Result 2",
 				"Result 3",
@@ -121,28 +153,12 @@ public final class GridLayoutFrame extends SizedFrame {
 				}
 			}
 		});
-
-		
-		// initialize actions
-		initActions();
-		
-		// create menu bar
-		createMenu();
-		
-		// create tool bar
-		createToolbar();
-		
-		// popup menu
-		JPopupMenu popupMenu = new JPopupMenu();
-		popupMenu.add(new JMenuItem(copyAction));
-		popupMenu.add(new JMenuItem(pasteAction));
-		popupMenu.add(new JMenuItem(delAction));
-		listResult.setComponentPopupMenu(popupMenu);
 	}
 
 	public GridLayoutFrame(String title)
 			throws HeadlessException {
 		super(title, FRAME_WIDTH, FRAME_HEIGHT);
+		setIconImage(ICON_LOGO.getImage());
 	}
 	
 	/**
@@ -207,6 +223,13 @@ public final class GridLayoutFrame extends SizedFrame {
 		editMenu.add(new JMenuItem(delAction));
 		menuBar.add(editMenu);
 		setJMenuBar(menuBar);
+		
+		// popup menu
+		JPopupMenu popupMenu = new JPopupMenu();
+		popupMenu.add(new JMenuItem(copyAction));
+		popupMenu.add(new JMenuItem(pasteAction));
+		popupMenu.add(new JMenuItem(delAction));
+		listResult.setComponentPopupMenu(popupMenu);
 	}
 	
 	protected void createToolbar() {
@@ -267,9 +290,7 @@ public final class GridLayoutFrame extends SizedFrame {
 		getJMenuBar().setVisible(isMenuVisible);
 	}
 
-	private static final int FRAME_HEIGHT = 300;
-	private static final int FRAME_WIDTH = 400;
-
+	
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			@Override
