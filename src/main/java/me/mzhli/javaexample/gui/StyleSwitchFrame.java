@@ -3,15 +3,12 @@ package me.mzhli.javaexample.gui;
 import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.HeadlessException;
-import java.awt.Image;
 import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
-import java.io.File;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
 import javax.swing.AbstractAction;
-import javax.swing.Action;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;

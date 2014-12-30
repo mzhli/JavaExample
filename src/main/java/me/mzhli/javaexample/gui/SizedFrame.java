@@ -18,7 +18,7 @@ import javax.swing.JFrame;
 @SuppressWarnings("serial")
 public class SizedFrame extends JFrame {
 
-	public SizedFrame(String title) throws HeadlessException {
+	public SizedFrame(String title) {
 		this(title, DEFAULT_WIDTH, DEFAULT_HEIGHT);
 	}
 	

@@ -1,11 +1,8 @@
 package me.mzhli.javaexample.xml;
 
-import me.mzhli.javaexample.xml.XmlPrinter;
-import me.mzhli.javaexample.xml.XmlReader;
+import junit.framework.TestCase;
 
 import org.w3c.dom.Document;
-
-import junit.framework.TestCase;
 
 
 public class XmlPrinterTest extends TestCase {

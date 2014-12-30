@@ -6,10 +6,8 @@ import java.awt.GridBagLayout;
 import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
 import java.util.List;
 
-import javax.imageio.ImageIO;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
@@ -31,26 +29,18 @@ import javax.swing.JToolBar;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import me.mzhli.javaexample.util.IconStore;
+import me.mzhli.javaexample.util.IconStore.E_IconSize;
+
 @SuppressWarnings("serial")
 public final class GridLayoutFrame extends SizedFrame {
 	
 	/**
 	 * Application logo
 	 */
-	private static final ImageIcon ICON_LOGO;
+	private static final Icon ICON_LOGO = IconStore.getInstance().getIcon("logo", E_IconSize.ICO_SIZE_48x48);
 	
-	static 
-	{
-		ImageIcon icoLogo = null;
-		try {
-			icoLogo = new ImageIcon(ImageIO.read(GridLayoutFrame.class.getResource("/images/icons/logo.gif")));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		ICON_LOGO = icoLogo;
-	}
-	
-	private static final int FRAME_HEIGHT = 500;
+	private static final int FRAME_HEIGHT = 400;
 	private static final int FRAME_WIDTH = 400;
 	
 	/**
@@ -60,7 +50,7 @@ public final class GridLayoutFrame extends SizedFrame {
 	private JButton btnSetting;
 	private JTextField txtInput;
 	private JComboBox<String> cbCategory;
-	private JScrollPane scrollList;
+	private JScrollPane scrollPane;
 	private JList<String> listResult;
 	private JToolBar toolBar;
 	
@@ -93,14 +83,8 @@ public final class GridLayoutFrame extends SizedFrame {
 	}
 
 	private void initComponents() {
-		Icon icoSearch = null;
-		Icon icoSetting = null;
-		try {
-			icoSearch = new ImageIcon(ImageIO.read(getClass().getResource("/images/icons/search@24x24.png")));
-			icoSetting = new ImageIcon(ImageIO.read(getClass().getResource("/images/icons/setting@24x24.png")));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		Icon icoSearch = IconStore.getInstance().getIcon("search", E_IconSize.ICO_SIZE_24x24);
+		Icon icoSetting = IconStore.getInstance().getIcon("setting", E_IconSize.ICO_SIZE_24x24);
 		
 		btnSearch = new JButton("Search", icoSearch);
 ;		btnSearch.addActionListener(new ActionListener() {
@@ -136,7 +120,7 @@ public final class GridLayoutFrame extends SizedFrame {
 				"Result 9"
 		});
 		listResult.setBorder(BorderFactory.createLoweredBevelBorder());
-		scrollList = new JScrollPane(listResult);
+		scrollPane = new JScrollPane(listResult);
 		listResult.addListSelectionListener(new ListSelectionListener() {
 			@SuppressWarnings("unchecked")
 			@Override
@@ -158,7 +142,7 @@ public final class GridLayoutFrame extends SizedFrame {
 	public GridLayoutFrame(String title)
 			throws HeadlessException {
 		super(title, FRAME_WIDTH, FRAME_HEIGHT);
-		setIconImage(ICON_LOGO.getImage());
+		setIconImage(((ImageIcon)ICON_LOGO).getImage());
 	}
 	
 	/**
@@ -188,31 +172,13 @@ public final class GridLayoutFrame extends SizedFrame {
 			}
 		};
 		
-		Icon icoCopy16 = null;
-		Icon icoCopy24 = null;
-		Icon icoPaste16 = null;
-		Icon icoPaste24 = null;
-		Icon icoDelete16 = null;
-		Icon icoDelete24 = null;
-		Icon icoToggleMenu24 = null;
-		try {
-			icoCopy16 = new ImageIcon(ImageIO.read(this.getClass().getResource("/images/icons/copy@16x16.png")));
-			icoCopy24 = new ImageIcon(ImageIO.read(this.getClass().getResource("/images/icons/copy@24x24.png")));
-			icoPaste16 = new ImageIcon(ImageIO.read(this.getClass().getResource("/images/icons/paste@16x16.png")));
-			icoPaste24 = new ImageIcon(ImageIO.read(this.getClass().getResource("/images/icons/paste@24x24.png")));
-			icoDelete16 = new ImageIcon(ImageIO.read(this.getClass().getResource("/images/icons/delete@16x16.png")));
-			icoDelete24 = new ImageIcon(ImageIO.read(this.getClass().getResource("/images/icons/delete@24x24.png")));
-			icoToggleMenu24 = new ImageIcon(ImageIO.read(this.getClass().getResource("/images/icons/togglemenu@24x24.png")));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		copyAction.putValue(Action.SMALL_ICON, icoCopy16);
-		copyAction.putValue(Action.LARGE_ICON_KEY, icoCopy24);
-		pasteAction.putValue(Action.SMALL_ICON, icoPaste16);
-		pasteAction.putValue(Action.LARGE_ICON_KEY, icoPaste24);
-		delAction.putValue(Action.SMALL_ICON, icoDelete16);
-		delAction.putValue(Action.LARGE_ICON_KEY, icoDelete24);
-		toggleMenuAction.putValue(Action.LARGE_ICON_KEY, icoToggleMenu24);
+		copyAction.putValue(Action.SMALL_ICON, IconStore.getInstance().getIcon("copy", E_IconSize.ICO_SIZE_16x16));
+		copyAction.putValue(Action.LARGE_ICON_KEY, IconStore.getInstance().getIcon("copy", E_IconSize.ICO_SIZE_24x24));
+		pasteAction.putValue(Action.SMALL_ICON, IconStore.getInstance().getIcon("paste", E_IconSize.ICO_SIZE_16x16));
+		pasteAction.putValue(Action.LARGE_ICON_KEY, IconStore.getInstance().getIcon("paste", E_IconSize.ICO_SIZE_24x24));
+		delAction.putValue(Action.SMALL_ICON, IconStore.getInstance().getIcon("delete", E_IconSize.ICO_SIZE_16x16));
+		delAction.putValue(Action.LARGE_ICON_KEY, IconStore.getInstance().getIcon("delete", E_IconSize.ICO_SIZE_24x24));
+		toggleMenuAction.putValue(Action.LARGE_ICON_KEY, IconStore.getInstance().getIcon("togglemenu", E_IconSize.ICO_SIZE_24x24));
 	}
 	
 	protected void createMenu() {
@@ -252,7 +218,7 @@ public final class GridLayoutFrame extends SizedFrame {
 		panel.add(btnSetting, new GBC(2, 1, 1, 1).setWeight(0, 0).setFill(GBC.BOTH).setInsets(1));
 		panel.add(txtInput, new GBC(0, 0, 3, 1).setWeight(100, 0).setFill(GBC.BOTH).setInsets(1));
 		panel.add(cbCategory, new GBC(0, 1, 1, 1).setWeight(100, 0).setFill(GBC.BOTH).setInsets(1));
-		panel.add(scrollList, new GBC(0, 4, 4, 4).setWeight(100, 100).setFill(GBC.BOTH).setInsets(2));
+		panel.add(scrollPane, new GBC(0, 4, 4, 4).setWeight(100, 100).setFill(GBC.BOTH).setInsets(2));
 		add(panel, BorderLayout.CENTER);
 	}
 	

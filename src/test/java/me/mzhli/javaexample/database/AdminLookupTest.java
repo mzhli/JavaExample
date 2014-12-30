@@ -2,8 +2,8 @@ package me.mzhli.javaexample.database;
 
 import java.util.ArrayList;
 
-import me.mzhli.javaexample.database.AdminLookup.AdminInfo;
 import junit.framework.TestCase;
+import me.mzhli.javaexample.database.AdminLookup.AdminInfo;
 
 public class AdminLookupTest extends TestCase {
 

@@ -1,10 +1,12 @@
 package me.mzhli.javaexample.lang;
 
+import static java.lang.System.out;
+
 import java.io.OutputStream;
 import java.io.PrintStream;
-import java.lang.reflect.*;
-
-import static java.lang.System.out;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 
 public class Reflection {
 
