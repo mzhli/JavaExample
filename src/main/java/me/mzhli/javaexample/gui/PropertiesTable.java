@@ -1,6 +1,7 @@
 package me.mzhli.javaexample.gui;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,10 +26,12 @@ public class PropertiesTable extends JTable {
 		FileReader reader = new FileReader(new File(path));
 		Properties prop = new Properties();
 		try {
-			prop.load(reader);	
+			prop.load(reader);
 		} finally {
 			reader.close();
 		}
+		fileOpening = path;
+		
 		// Model parses the data
 		((PropertiesTableModel)getModel()).loadProperties(prop);
 		// Refresh view
@@ -36,7 +39,13 @@ public class PropertiesTable extends JTable {
 	}
 	
 	public void saveFile() throws IOException {
-		
+//		throw new IOException("Test");
+		OutputStream os = new FileOutputStream(fileOpening);
+		try {
+			((PropertiesTableModel)getModel()).getProperties().store(os, "Icon setting file");
+		} finally {
+			os.close();
+		}
 	}
 	
 	public void load(InputStream in) throws IOException {
@@ -49,6 +58,10 @@ public class PropertiesTable extends JTable {
 	
 	public void saveAs(String newfile) throws IOException {
 		
+	}
+	
+	public boolean isModified() {
+		return ((PropertiesTableModel)getModel()).isModified();
 	}
 	
 	/**
@@ -64,6 +77,10 @@ public class PropertiesTable extends JTable {
 		public void loadProperties(Properties prop) {
 			this.prop = prop;
 			reload();
+		}
+		
+		public Properties getProperties() {
+			return prop;
 		}
 
 		@Override
@@ -164,9 +181,14 @@ public class PropertiesTable extends JTable {
 			private Object val;
 		}
 		
+		public boolean isModified() {
+			return isModified;
+		}
+		
 		private Properties prop;
 		private ArrayList<KVPair> kvList;
-		boolean isModified;
+		private boolean isModified;
 	}
 	
+	private String fileOpening;
 }

@@ -3,6 +3,9 @@ package me.mzhli.javaexample.util;
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
+import java.awt.event.ComponentListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
 
@@ -26,6 +29,9 @@ public class PropertiesEditor extends SizedFrame {
 
 		// Initialize components in frame
 		initComponents();
+		
+		// Add event listener
+		addEventListener();
 	}
 
 	public static void main(String[] args) {
@@ -53,8 +59,41 @@ public class PropertiesEditor extends SizedFrame {
 		
 		// Table for properties
 		kvTable = new PropertiesTable();
-//		kvTable.set
 		add(new JScrollPane(kvTable), BorderLayout.CENTER);
+	}
+	
+	/**
+	 * Add all event listener
+	 */
+	private void addEventListener() {
+		// Listener for prompt saving file when modified 
+		addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent e) {
+				if (kvTable.isModified()) {
+					int ifSave = JOptionPane.showConfirmDialog(PropertiesEditor.this, "File was modified.\nDo you want to save?", 
+							"Save file", JOptionPane.YES_NO_OPTION);
+					if (ifSave == JOptionPane.YES_OPTION) {
+						while (true) {
+							try {
+								kvTable.saveFile();
+								break;
+							} catch (IOException e1) {
+								e1.printStackTrace();
+								int ifRetry = JOptionPane.showConfirmDialog(PropertiesEditor.this, "Failed to save file.\nDo you want to retry?",
+										"Retry", JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE);
+								if (ifRetry == JOptionPane.YES_OPTION) {
+									continue;
+								} else {
+									break;
+								}
+							}			
+						}
+					}
+				}
+				super.windowClosing(e);
+			}
+		});
 	}
 	
 	/**
