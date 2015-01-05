@@ -17,8 +17,17 @@ import javax.swing.table.AbstractTableModel;
 public class PropertiesTable extends JTable {
 
 	public PropertiesTable() {
-		setModel(new PropertiesTableModel());
+		// use customized table model
+		super(new PropertiesTableModel());
 		setFillsViewportHeight(true);
+	}
+
+	/* (non-Javadoc)
+	 * @see javax.swing.JTable#getModel()
+	 */
+	@Override
+	public PropertiesTableModel getModel() {
+		return (PropertiesTableModel)super.getModel();
 	}
 
 	public void loadFile(String path) throws IOException {
@@ -33,16 +42,15 @@ public class PropertiesTable extends JTable {
 		fileOpening = path;
 		
 		// Model parses the data
-		((PropertiesTableModel)getModel()).loadProperties(prop);
+		getModel().importProperties(prop);
 		// Refresh view
 		this.revalidate();
 	}
 	
 	public void saveFile() throws IOException {
-//		throw new IOException("Test");
 		OutputStream os = new FileOutputStream(fileOpening);
 		try {
-			((PropertiesTableModel)getModel()).getProperties().store(os, "Icon setting file");
+			getModel().exportProperties(os);
 		} finally {
 			os.close();
 		}
@@ -61,26 +69,29 @@ public class PropertiesTable extends JTable {
 	}
 	
 	public boolean isModified() {
-		return ((PropertiesTableModel)getModel()).isModified();
+		return getModel().isModified();
 	}
 	
 	/**
 	 * Data model for Properties table class
 	 */
-	private static class PropertiesTableModel extends AbstractTableModel {
+	public static class PropertiesTableModel extends AbstractTableModel {
 		
 		public PropertiesTableModel() {
 			kvList = new ArrayList<KVPair>(10);
 			isModified = false;
 		}
 	
-		public void loadProperties(Properties prop) {
+		public void importProperties(Properties prop) {
 			this.prop = prop;
 			reload();
 		}
 		
-		public Properties getProperties() {
-			return prop;
+		public void exportProperties(OutputStream os) throws IOException {
+			if (prop == null)
+				return;
+			prop.store(os, "");
+			setModified(false);
 		}
 
 		@Override
@@ -140,7 +151,7 @@ public class PropertiesTable extends JTable {
 				String key = (String)getValueAt(rowIndex, 0);
 				prop.setProperty(key, (String)aValue);
 				kvList.set(rowIndex, new KVPair(key, aValue));
-				isModified = true; // mark as modified
+				setModified(true);
 			}
 		}
 
@@ -153,6 +164,24 @@ public class PropertiesTable extends JTable {
 				String val = (String)prop.getProperty(key);
 				kvList.add(new KVPair(key, val));
 			}
+		}
+		
+		/**
+		 * Set the modified state, will trigger event internally if modified state switch
+		 * @param newState new state of modified
+		 * @return old state of modified
+		 */
+		protected boolean setModified(boolean newState) {
+			boolean oldState = isModified;
+			isModified = newState;
+			if (isModified != oldState) {
+				// Need to manually call fire method to trigger table model event
+				// Here we just reuse fireTableDataChanged instead of creating another new 
+				// fire method for modified state toggle since this is the only event 
+				// the listener will receive
+				fireTableDataChanged();
+			}
+			return oldState;
 		}
 		
 		/**

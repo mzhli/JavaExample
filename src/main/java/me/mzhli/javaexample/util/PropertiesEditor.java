@@ -3,7 +3,6 @@ package me.mzhli.javaexample.util;
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
-import java.awt.event.ComponentListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
@@ -15,6 +14,8 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JToolBar;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import me.mzhli.javaexample.gui.PropertiesTable;
@@ -52,8 +53,10 @@ public class PropertiesEditor extends SizedFrame {
 	private void initComponents() {
 		// Toolbar
 		toolbar = new JToolBar();
-		JButton btnOpenFile = new JButton(new OpenFileAction());
+		btnOpenFile = new JButton(new OpenFileAction());
 		toolbar.add(btnOpenFile);
+		btnSaveFile = new JButton(new SaveFileAction());
+		toolbar.add(btnSaveFile).setEnabled(false);;
 		toolbar.setFloatable(false);
 		add(toolbar, BorderLayout.NORTH);
 		
@@ -66,7 +69,7 @@ public class PropertiesEditor extends SizedFrame {
 	 * Add all event listener
 	 */
 	private void addEventListener() {
-		// Listener for prompt saving file when modified 
+		// Listener for prompt saving file dialog when quit
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
@@ -74,26 +77,43 @@ public class PropertiesEditor extends SizedFrame {
 					int ifSave = JOptionPane.showConfirmDialog(PropertiesEditor.this, "File was modified.\nDo you want to save?", 
 							"Save file", JOptionPane.YES_NO_OPTION);
 					if (ifSave == JOptionPane.YES_OPTION) {
-						while (true) {
-							try {
-								kvTable.saveFile();
-								break;
-							} catch (IOException e1) {
-								e1.printStackTrace();
-								int ifRetry = JOptionPane.showConfirmDialog(PropertiesEditor.this, "Failed to save file.\nDo you want to retry?",
-										"Retry", JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE);
-								if (ifRetry == JOptionPane.YES_OPTION) {
-									continue;
-								} else {
-									break;
-								}
-							}			
-						}
+						callSaveFile();		
 					}
 				}
 				super.windowClosing(e);
 			}
 		});
+		
+		// Listener for table modification
+		kvTable.getModel().addTableModelListener(new TableModelListener() {
+			@Override
+			public void tableChanged(TableModelEvent e) {
+				// By convention, the listener will receive event when 
+				// and only when modification flag toggle
+				btnSaveFile.setEnabled(kvTable.isModified());
+			}
+		});
+	}
+	
+	/**
+	 * Call of save file of properties table with retry
+	 */
+	protected void callSaveFile() {
+		while (true) {
+			try {
+				kvTable.saveFile();
+				break;
+			} catch (IOException e1) {
+				e1.printStackTrace();
+				int ifRetry = JOptionPane.showConfirmDialog(this, "Failed to save file.\nDo you want to retry?",
+						"Retry", JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE);
+				if (ifRetry == JOptionPane.YES_OPTION) {
+					continue;
+				} else {
+					break;
+				}
+			}			
+		}
 	}
 	
 	/**
@@ -122,10 +142,27 @@ public class PropertiesEditor extends SizedFrame {
 			}
 		}
 	}
+	
+	/**
+	 *	Action for "Save" button 
+	 */
+	private class SaveFileAction extends AbstractAction {
+		public SaveFileAction() {
+			putValue(SMALL_ICON, IconStore.getInstance().getIcon("save", E_IconSize.ICO_SIZE_16x16));
+			putValue(SHORT_DESCRIPTION, "Save File");
+		}
+		
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			callSaveFile();
+		}
+	}
 
 	/**
 	 * Components in frame
 	 */
 	protected PropertiesTable kvTable;
 	protected JToolBar toolbar;
+	protected JButton btnOpenFile;
+	protected JButton btnSaveFile;
 }
