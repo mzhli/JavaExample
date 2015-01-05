@@ -121,7 +121,7 @@ public class PropertiesEditor extends SizedFrame {
 	 */
 	private class OpenFileAction extends AbstractAction {
 		public OpenFileAction() {
-			putValue(SMALL_ICON, IconStore.getInstance().getIcon("open", E_IconSize.ICO_SIZE_16x16));
+			putValue(SMALL_ICON, IconStore.getInstance().getIcon("open", E_IconSize.ICO_SIZE_24x24));
 			putValue(SHORT_DESCRIPTION, "Open File");
 		}
 		
@@ -148,7 +148,7 @@ public class PropertiesEditor extends SizedFrame {
 	 */
 	private class SaveFileAction extends AbstractAction {
 		public SaveFileAction() {
-			putValue(SMALL_ICON, IconStore.getInstance().getIcon("save", E_IconSize.ICO_SIZE_16x16));
+			putValue(SMALL_ICON, IconStore.getInstance().getIcon("save", E_IconSize.ICO_SIZE_24x24));
 			putValue(SHORT_DESCRIPTION, "Save File");
 		}
 		
